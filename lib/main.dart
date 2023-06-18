@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:lms_fiverr/services/database.dart';
 import 'package:lms_fiverr/ui/login.dart';
 
-void main() {
-  populateDatabase();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await populateDatabase();
   runApp(const MyApp());
 }
 
-void populateDatabase() {}
+Future populateDatabase() async {
+  final db = Database();
+  const myTable = 'what';
+
+  await db.insert(myTable, {'id': 1, 'name': 'John Doe'});
+
+  final recordExists = await db.recordExists(myTable, 1);
+  print('Record exists: $recordExists');
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
