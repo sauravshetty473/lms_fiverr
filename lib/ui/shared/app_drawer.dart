@@ -56,21 +56,29 @@ class AppDrawer extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.home,
-                      color: AppColors.DOCTOR_BLUE,
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Home',
-                      style: AppFonts.text12
-                          .copyWith(color: AppColors.DOCTOR_BLUE),
-                    )
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    while (Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
+                    ref.read(pageIndexProvider.notifier).update((state) => 0);
+                  },
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.home,
+                        color: AppColors.DOCTOR_BLUE,
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Home',
+                        style: AppFonts.text16
+                            .copyWith(color: AppColors.DOCTOR_BLUE),
+                      )
+                    ],
+                  ),
                 ),
                 GestureDetector(
                   onTap: () {
@@ -84,9 +92,9 @@ class AppDrawer extends HookConsumerWidget {
                     );
                   },
                   child: Text(
-                    '          My Lessons',
+                    '       My Lessons',
                     style:
-                        AppFonts.text12.copyWith(color: AppColors.DOCTOR_BLUE),
+                        AppFonts.text16.copyWith(color: AppColors.DOCTOR_BLUE),
                   ),
                 ),
               ],
@@ -97,7 +105,11 @@ class AppDrawer extends HookConsumerWidget {
           ),
           GestureDetector(
             onTap: () {
+              while (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
               ref.read(studentProvider.notifier).update((state) => null);
+              ref.read(pageIndexProvider.notifier).update((state) => 0);
             },
             child: Container(
               color: AppColors.DOCTOR_BLUE,

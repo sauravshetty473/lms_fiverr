@@ -7,8 +7,10 @@ import 'app_drawer.dart';
 class CustomScaffold extends HookConsumerWidget {
   final Widget body;
   final String? imageUrl;
+  final bool noAction;
 
-  const CustomScaffold({Key? key, required this.body, this.imageUrl})
+  const CustomScaffold(
+      {Key? key, required this.body, this.imageUrl, this.noAction = false})
       : super(key: key);
 
   @override
@@ -19,7 +21,7 @@ class CustomScaffold extends HookConsumerWidget {
       appBar: AppBar(
         backgroundColor: Colors.lightGreen.shade300,
         actions: [
-          if (pageIndex > 0 && pageIndex < 4)
+          if (pageIndex > 0 && pageIndex < 4 && !noAction)
             IconButton(
               onPressed: () {
                 ref

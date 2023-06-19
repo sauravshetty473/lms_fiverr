@@ -120,7 +120,16 @@ class Database {
       whereArgs: [index],
     );
 
-    return result.map((e) => Lesson.fromMap(e)).toList();
+    final temp = result.map((e) {
+      return Lesson.fromMap(e);
+    }).toList();
+
+    final subjects = await getAllSubjects();
+    for (final i in temp) {
+      i.subject = subjects.where((element) => element.id == i.subjectId).first;
+    }
+
+    return temp;
   }
 
   Future<List<String>> getTableNames() async {
@@ -141,9 +150,11 @@ class Database {
   Future<void> addLessonToDatabase(Lesson lesson) async {
     final db = await database;
     final result = await db.query(DBTable.LESSON_TABLE,
-        where: 'start_time = ? AND end_time = ? AND teacher_id = ?',
-        whereArgs: [lesson.startTime, lesson.endTime, lesson.teacherId]);
+        where: 'start_time = ? AND end_time = ? AND teacher_id = ? AND status =?',
+        whereArgs: [lesson.startTime, lesson.endTime, lesson.teacherId, 'Booked']);
     if (result.isNotEmpty) throw Exception('Already Booked!');
     await db.insert(DBTable.LESSON_TABLE, lesson.toMap());
   }
+
+
 }

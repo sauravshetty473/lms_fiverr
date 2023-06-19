@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:lms_fiverr/models/subject.model.dart';
+
 class Lesson {
   final int id;
   final int studentId;
@@ -7,7 +9,9 @@ class Lesson {
   final int subjectId;
   final String startTime;
   final String endTime;
-  final String status;
+  String status;
+
+  Subject? subject;
 
   Lesson({
     this.id = 1,
@@ -58,7 +62,7 @@ class Lesson {
     final subjectId = random.nextInt(100);
     const startTime = '9:00 AM';
     const endTime = '10:00 AM';
-    const status = 'Scheduled';
+    const status = 'Booked';
 
     return Lesson(
       id: id,
