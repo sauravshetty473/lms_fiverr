@@ -70,4 +70,16 @@ class Lesson {
       status: status,
     );
   }
+
+  factory Lesson.fromMap(Map<String, dynamic> map) {
+    return Lesson(
+      id: map['id'] ?? 1,
+      studentId: map['student_id'],
+      teacherId: map['teacher_id'],
+      subjectId: map['subject_id'],
+      startTime: map['start_time'],
+      endTime: map['end_time'],
+      status: map['status'],
+    );
+  }
 }

@@ -17,4 +17,12 @@ class Subject {
       'image_url': imageUrl,
     };
   }
+
+  factory Subject.fromMap(Map<String, dynamic> map) {
+    return Subject(
+      id: map['id'] ?? 1,
+      name: map['name'],
+      imageUrl: map['image_url'],
+    );
+  }
 }

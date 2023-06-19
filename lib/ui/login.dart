@@ -71,11 +71,12 @@ class Login extends HookConsumerWidget {
                           loading.value = true;
 
                           try {
-                            final id = (await Database().getStudentByUsername(
-                                    username.value.trim(),
-                                    password.value.trim()))
-                                .id;
-                            ref.watch(studentIDProvider.notifier).update((state) => id);
+                            final student = await Database()
+                                .getStudentByUsername(username.value.trim(),
+                                    password.value.trim());
+                            ref
+                                .watch(studentProvider.notifier)
+                                .update((state) => student);
                           } catch (e) {
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(

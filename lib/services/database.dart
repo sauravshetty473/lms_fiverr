@@ -1,8 +1,12 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lms_fiverr/constants/db_table.dart';
+import 'package:lms_fiverr/models/subject.model.dart';
+import 'package:lms_fiverr/models/teacher.model.dart';
 import 'package:lms_fiverr/services/sql_query.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart' as sql;
 
+import '../models/lesson.model.dart';
 import '../models/student.model.dart';
 
 final dbProvider = Provider((ref) => Database());
@@ -17,7 +21,6 @@ class Database {
   }
 
   Database._internal();
-
 
   Future<sql.Database> get database async {
     if (_db != null) {
@@ -70,10 +73,9 @@ class Database {
   }
 
   Future<Student> getStudentByUsername(String username, String password) async {
-
     final db = await database;
     final result = await db.query(
-      'Students',
+      DBTable.STUDENT_TABLE,
       where: 'username = ? AND password = ?',
       whereArgs: [username, password],
       limit: 1,
@@ -90,6 +92,37 @@ class Database {
     throw Exception('Incorrect username or password!');
   }
 
+  Future<List<Subject>> getAllSubjects() async {
+    final db = await database;
+    final result = await db.query(
+      DBTable.SUBJECT_TABLE,
+    );
+
+    return result.map((e) => Subject.fromMap(e)).toList();
+  }
+
+  Future<List<Teacher>> getAllTeachers(int index) async {
+    final db = await database;
+    final result = await db.query(
+      DBTable.TEACHER_TABLE,
+      where: 'subject_id = ?',
+      whereArgs: [index],
+    );
+
+    return result.map((e) => Teacher.fromMap(e)).toList();
+  }
+
+  Future<List<Lesson>> getMyLessons(int index) async {
+    final db = await database;
+    final result = await db.query(
+      DBTable.LESSON_TABLE,
+      where: 'student_id = ?',
+      whereArgs: [index],
+    );
+
+    return result.map((e) => Lesson.fromMap(e)).toList();
+  }
+
   Future<List<String>> getTableNames() async {
     final db = await database;
     final result = await db
@@ -103,5 +136,14 @@ class Database {
 
     await sql.deleteDatabase(dbRef.path);
     _db = null;
+  }
+
+  Future<void> addLessonToDatabase(Lesson lesson) async {
+    final db = await database;
+    final result = await db.query(DBTable.LESSON_TABLE,
+        where: 'start_time = ? AND end_time = ? AND teacher_id = ?',
+        whereArgs: [lesson.startTime, lesson.endTime, lesson.teacherId]);
+    if (result.isNotEmpty) throw Exception('Already Booked!');
+    await db.insert(DBTable.LESSON_TABLE, lesson.toMap());
   }
 }

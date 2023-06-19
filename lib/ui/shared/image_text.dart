@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lms_fiverr/constants/app_colors.dart';
+import 'package:lms_fiverr/constants/app_fonts.dart';
 
 class ImageText extends StatelessWidget {
   final String imageUrl;
@@ -16,19 +18,34 @@ class ImageText extends StatelessWidget {
         if (onClick == null) return;
         onClick!();
       },
-      child: Column(
-        children: [
-          Expanded(
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              width: double.infinity,
+      child: Container(
+        padding: const EdgeInsets.all(2).copyWith(bottom: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: AppColors.BLACK_SHADOW
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
+              ),
             ),
-          ),
-          Container(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Text(text)),
-        ],
+            Container(
+              padding: const EdgeInsets.only(top: 8, bottom: 0),
+              child: Text(
+                text,
+                style:
+                    AppFonts.text16Bold.copyWith(color: AppColors.DOCTOR_BLUE),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

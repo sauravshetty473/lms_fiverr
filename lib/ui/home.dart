@@ -4,6 +4,7 @@ import 'package:lms_fiverr/ui/choose_subject.dart';
 import 'package:lms_fiverr/ui/choose_teacher.dart';
 import 'package:lms_fiverr/ui/choose_time.dart';
 import 'package:lms_fiverr/ui/choose_weekday.dart';
+import 'package:lms_fiverr/ui/confirmation.dart';
 
 import '../providers.dart';
 
@@ -14,11 +15,12 @@ class Home extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pageIndex = ref.watch(pageIndexProvider);
 
-    return [
+    return const [
       ChooseSubject(),
       ChooseWeekDay(),
       ChooseTime(),
       ChooseTeacher(),
+      Confirmation(),
     ][pageIndex];
   }
 }

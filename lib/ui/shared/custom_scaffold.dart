@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lms_fiverr/providers.dart';
 
-import '../app_drawer.dart';
+import 'app_drawer.dart';
 
-class CustomScaffold extends StatelessWidget {
+class CustomScaffold extends HookConsumerWidget {
   final Widget body;
   final String? imageUrl;
 
@@ -10,11 +12,24 @@ class CustomScaffold extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pageIndex = ref.watch(pageIndexProvider);
     return Scaffold(
       drawer: const AppDrawer(),
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.lightGreen.shade300,
+        actions: [
+          if (pageIndex > 0 && pageIndex < 4)
+            IconButton(
+              onPressed: () {
+                ref
+                    .read(pageIndexProvider.notifier)
+                    .update((state) => state - 1);
+              },
+              icon: const Icon(Icons.arrow_back_ios_rounded),
+              color: Colors.white,
+            )
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -24,7 +39,7 @@ class CustomScaffold extends StatelessWidget {
                 imageUrl!,
                 fit: BoxFit.cover,
                 width: double.infinity,
-                height: 100,
+                height: 150,
               ),
             body
           ],

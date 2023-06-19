@@ -18,4 +18,13 @@ class Teacher {
       'image_url': imageUrl,
     };
   }
+
+  factory Teacher.fromMap(Map<String, dynamic> map) {
+    return Teacher(
+      id: map['id'] ?? 1,
+      name: map['name'],
+      subjectId: map['subject_id'],
+      imageUrl: map['image_url'],
+    );
+  }
 }
