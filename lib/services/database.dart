@@ -1,111 +1,23 @@
-import 'package:lms_fiverr/constants/db_table.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lms_fiverr/services/sql_query.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart' as sql;
 
-class Student {
-  final int id;
-  final String name;
-  final String username;
-  final String password;
+import '../models/student.model.dart';
 
-  Student({
-    required this.id,
-    required this.name,
-    required this.username,
-    required this.password,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'username': username,
-      'password': password,
-    };
-  }
-}
-
-class Teacher {
-  final int id;
-  final String name;
-  final int subjectId;
-  final String imageUrl;
-
-  Teacher({
-    required this.id,
-    required this.name,
-    required this.subjectId,
-    required this.imageUrl,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'subject_id': subjectId,
-      'image_url': imageUrl,
-    };
-  }
-}
-
-class Subject {
-  final int id;
-  final String name;
-  final String imageUrl;
-
-  Subject({
-    required this.id,
-    required this.name,
-    required this.imageUrl,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'image_url': imageUrl,
-    };
-  }
-}
-
-class Lesson {
-  final int id;
-  final int studentId;
-  final int teacherId;
-  final String startTime;
-  final String endTime;
-  final String status;
-
-  Lesson({
-    required this.id,
-    required this.studentId,
-    required this.teacherId,
-    required this.startTime,
-    required this.endTime,
-    required this.status,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'student_id': studentId,
-      'teacher_id': teacherId,
-      'start_time': startTime,
-      'end_time': endTime,
-      'status': status,
-    };
-  }
-}
+final dbProvider = Provider((ref) => Database());
 
 class Database {
-  static final Database _singleton = Database._internal();
+  static Database? _singleton;
   static sql.Database? _db;
 
   factory Database() {
-    return _singleton;
+    _singleton ??= Database._internal();
+    return _singleton!;
   }
 
   Database._internal();
+
 
   Future<sql.Database> get database async {
     if (_db != null) {
@@ -123,46 +35,10 @@ class Database {
       pathToDatabase,
       version: 1,
       onCreate: (db, version) async {
-
-        await db.execute('''
-          CREATE TABLE ${DBTable.STUDENT_TABLE} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            username TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL
-          )
-        ''');
-
-        await db.execute('''
-          CREATE TABLE ${DBTable.TEACHER_TABLE} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            subject_id INTEGER NOT NULL,
-            image_url TEXT,
-            FOREIGN KEY (subject_id) REFERENCES Subjects (id)
-          )
-        ''');
-
-        await db.execute('''
-          CREATE TABLE ${DBTable.SUBJECT_TABLE} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL UNIQUE,
-            image_url TEXT
-          )
-        ''');
-
-        await db.execute('''
-          CREATE TABLE ${DBTable.LESSON_TABLE} (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            student_id INTEGER NOT NULL,
-            teacher_id INTEGER NOT NULL,
-            start_time TEXT NOT NULL,
-            end_time TEXT NOT NULL,
-            status TEXT NOT NULL,
-            FOREIGN KEY (student_id) REFERENCES Students (id),
-            FOREIGN KEY (teacher_id) REFERENCES Teachers (id)
-          )
-        ''');
+        await db.execute(SQLQuery.STUDENT_TABLE);
+        await db.execute(SQLQuery.TEACHER_TABLE);
+        await db.execute(SQLQuery.SUBJECT_TABLE);
+        await db.execute(SQLQuery.LESSON_TABLE);
       },
     );
   }
@@ -194,6 +70,7 @@ class Database {
   }
 
   Future<Student> getStudentByUsername(String username, String password) async {
+
     final db = await database;
     final result = await db.query(
       'Students',
@@ -210,16 +87,16 @@ class Database {
       );
     }
 
-    throw Exception('Student not found');
+    throw Exception('Incorrect username or password!');
   }
 
   Future<List<String>> getTableNames() async {
     final db = await database;
-    final result = await db.query('sqlite_master', where: 'type = ?', whereArgs: ['table']);
+    final result = await db
+        .query('sqlite_master', where: 'type = ?', whereArgs: ['table']);
 
     return result.map((row) => row['name'] as String).toList();
   }
-
 
   Future<void> deleteDatabaseCustom() async {
     final dbRef = await database;

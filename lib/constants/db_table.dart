@@ -1,3 +1,6 @@
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names
+
+
 class DBTable{
   static const String STUDENT_TABLE = 'Students';
   static const String TEACHER_TABLE = 'Teachers';

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lms_fiverr/ui/choose_weekday.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lms_fiverr/providers.dart';
 import 'package:lms_fiverr/ui/shared/custom_scaffold.dart';
 import 'package:lms_fiverr/ui/shared/image_text.dart';
 
-class ChooseSubject extends StatelessWidget {
+class ChooseSubject extends HookConsumerWidget {
   const ChooseSubject({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return CustomScaffold(
       body: Column(
         children: [
@@ -18,10 +19,14 @@ class ChooseSubject extends StatelessWidget {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10),
             children: [1, 2, 3]
-                .map((e) =>  ImageText(
+                .map((e) => ImageText(
                       onClick: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const ChooseWeekDay()));
+                        ref
+                            .read(pageIndexProvider.notifier)
+                            .update((state) => 1);
+                        ref.read(lessonProvider.notifier).update(
+                              (state) => state.clone(subjectId: 1),
+                            );
                       },
                       text: 'lesson1',
                       imageUrl:
