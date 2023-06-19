@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lms_fiverr/constants/db_table.dart';
 import 'package:lms_fiverr/services/database.dart';
 import 'package:lms_fiverr/ui/login.dart';
 
@@ -10,12 +11,16 @@ void main() async {
 
 Future populateDatabase() async {
   final db = Database();
-  const myTable = 'what';
+  await db.deleteDatabaseCustom();
 
-  await db.insert(myTable, {'id': 1, 'name': 'John Doe'});
+  await db.insert(
+      DBTable.STUDENT_TABLE,
+      Student(id: 1, name: 'Saurav', username: 'saurav.vs', password: 'admin')
+          .toMap());
 
-  final recordExists = await db.recordExists(myTable, 1);
-  print('Record exists: $recordExists');
+
+
+  print(await db.getTableNames());
 }
 
 class MyApp extends StatelessWidget {
